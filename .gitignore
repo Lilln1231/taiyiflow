@@ -1,0 +1,6 @@
+target/
+config/ops.env
+audit/
+reports/
+*.log
+.DS_Store
