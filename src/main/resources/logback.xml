@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- SDK 自身日志走 stderr，避免污染流式回答的 stdout -->
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <logger name="io.taiyiflow" level="INFO"/>
+  <logger name="org.apache.hc" level="WARN"/>
+
+  <root level="INFO">
+    <appender-ref ref="STDERR"/>
+  </root>
+</configuration>

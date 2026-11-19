@@ -1,0 +1,77 @@
+# 常驻运维数字员工配置模板（基于 taiyiflow-sdk-worker）
+# 注意：worker 无 HTTP 端口、无 healthcheck；就绪看协同连接与平台在线状态。
+base-url: https://snz1.cn/taiyi/composer
+auth:
+  type: API_KEY
+  token-secret: TAIYIFLOW_API_KEY        # 填环境变量名，不是令牌本身
+identity:
+  worker-id: ops-worker-01
+  display-name: 运维数字员工
+  role: COLLABORATION_WORKER
+  abilities: []                          # 只声明 task-handler 真正实现的能力
+workspace: /var/lib/taiyiflow/worker
+state-dir: /var/lib/taiyiflow/runtime-state
+outbox:
+  max-entries: 1000
+  max-entry-bytes: 1048576
+  max-total-bytes: 16777216
+  max-retries: 32
+recovery-policy: AUTO
+permission-policy: READONLY               # 需要 shell 时改为 CONFIRM，审批走平台
+approval:
+  channel: PLATFORM
+execution:
+  concurrency: 3
+  connect-timeout: PT15S
+  drain-timeout: PT30S
+  request-timeout: PT30S
+tools:
+  builtin-tools: false                    # 默认不启用本地工具；按需打开
+  allowed-shell-commands:
+    - ls
+    - cat
+    - date
+    - whoami
+    - pwd
+    - uname
+    - df
+    - free
+    - ps
+    - uptime
+    - head
+    - tail
+    - id
+    - hostname
+  media: false
+  skills:
+    enabled: false
+    platform-enabled: false
+    default-names: []
+    bundled-resources: []
+    tolerate-platform-failure: true
+    sync-mode: DISABLED
+  browser:
+    mode: DISABLED                        # 运维场景默认不开浏览器
+    launch-arguments: []
+    action-timeout: PT15S
+    max-pages-per-session: 10
+    max-read-text-characters: 30000
+    max-console-messages: 200
+    max-screenshot-bytes: 1048576
+    execute-js-enabled: false
+    allowed-hosts: []
+    allowed-cidrs: []
+extensions:
+  # 必填：换成你方身份系统里的校验器类名（public 无参构造）
+  identity-validator: your.platform.PlatformWorkerIdentityValidator
+  # task-handler: your.platform.OpsTaskHandler
+  # approval-handler: your.platform.PlatformApprovalHandler
+  # hooks: [your.platform.OpsMetricsHook]
+
+# 持久化令牌方案（更安全的生产选项）：
+# auth:
+#   type: PERSISTENT_TOKEN
+#   token-secret: TAIYIFLOW_PERSISTENT_TOKEN
+#   device-id: ops-worker-01
+#   credential-file: /var/lib/taiyiflow-credentials/credentials.json
+#   key-file: /var/lib/taiyiflow-credentials/encryption.key
